@@ -10,12 +10,17 @@ export default class App extends Component {
     addResponseMessage(newMessage);
   }
 
+  handleSpeechNotifications = (msg) => {
+    console.log(msg)
+  }
+
   render() {
     return (
       <Widget
         title="Bienvenido"
         subtitle="Asistente virtual"
         senderPlaceHolder="Escribe aquí ..."
+        handleSpeechNotifications={this.handleSpeechNotifications}
         handleNewUserMessage={this.handleNewUserMessage}
         badge={1}
       />
