@@ -33,7 +33,7 @@ export default class Sender extends React.Component {
       upgrade();
     } else {
       this.recognition = new webkitSpeechRecognition();
-      this.recognition.continuous = false;
+      this.recognition.continuous = true;
       this.recognition.interimResults = true;
 
       this.recognition.onstart = () => {
@@ -84,9 +84,12 @@ export default class Sender extends React.Component {
         for (let i = event.resultIndex; i < event.results.length; ++i) {
           if (event.results[i].isFinal) {
             this.setState({
-              final_transcript: this.state.final_transcript + event.results[i][0].transcript
+              final_transcript: event.results[i][0].transcript
             });
           } else {
+            this.setState({
+              final_transcript: ''
+            })
             this.setState({
               interim_transcript: this.state.interim_transcript + event.results[i][0].transcript
             });
