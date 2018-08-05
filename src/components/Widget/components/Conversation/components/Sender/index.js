@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { CHAT_ERRORS } from 'constants';
 
-import send from 'assets/send_button.svg';
-import micOn from 'assets/microphone.svg';
-import micOff from 'assets/microphone-slash.svg';
+import send from '@assets/send_button.svg';
+import micOn from '@assets/microphone.svg';
+import micOff from '@assets/microphone-slash.svg';
 import './style.scss';
 
 export default class Sender extends React.Component {
@@ -29,12 +29,11 @@ export default class Sender extends React.Component {
       onSpeechError(CHAT_ERRORS.UPGRADE);
     }
 
-
     if (!('webkitSpeechRecognition' in window)) {
       upgrade();
     } else {
       this.recognition = new webkitSpeechRecognition();
-      this.recognition.continuous = true;
+      this.recognition.continuous = false;
       this.recognition.interimResults = true;
 
       this.recognition.onstart = () => {
@@ -93,8 +92,8 @@ export default class Sender extends React.Component {
             });
           }
         }
-        const finalTranscriptOutput = capitalize(this.state.final_transcript);
 
+        const finalTranscriptOutput = capitalize(this.state.final_transcript);
         this.props.onSendMessageVoice(finalTranscriptOutput);
       };
     }
