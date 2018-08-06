@@ -12,7 +12,7 @@ const ConnectedWidget = props =>
       titleAvatar={props.titleAvatar}
       subtitle={props.subtitle}
       handleNewUserMessage={props.handleNewUserMessage}
-      handleSpeechNotifications={props.handleSpeechNotifications}
+      handleSpeechRecognitionError={props.handleSpeechRecognitionError}
       senderPlaceHolder={props.senderPlaceHolder}
       profileAvatar={props.profileAvatar}
       showCloseButton={props.showCloseButton}
@@ -28,7 +28,7 @@ ConnectedWidget.propTypes = {
   titleAvatar: PropTypes.string,
   subtitle: PropTypes.string,
   handleNewUserMessage: PropTypes.func.isRequired,
-  handleSpeechNotifications: PropTypes.func.isRequired,
+  handleSpeechRecognitionError: PropTypes.func.isRequired,
   senderPlaceHolder: PropTypes.string,
   profileAvatar: PropTypes.string,
   showCloseButton: PropTypes.bool,

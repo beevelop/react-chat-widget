@@ -27,7 +27,7 @@ class Widget extends Component {
     event.target.message.value = '';
   }
 
-  handleMessageSubmitVoice = (input) => {
+  handleSpeechRecognitionResult = (input) => {
     const userInput = input;
     if (userInput) {
       this.props.dispatch(addUserMessage(userInput));
@@ -35,8 +35,8 @@ class Widget extends Component {
     }
   }
 
-  handleSpeechNotification = (error) => {
-    this.props.handleSpeechNotifications(error);
+  handleSpeechRecognitionError = (error) => {
+    this.props.handleSpeechRecognitionError(error);
   }
 
   render() {
@@ -44,8 +44,8 @@ class Widget extends Component {
       <WidgetLayout
         onToggleConversation={this.toggleConversation}
         onSendMessage={this.handleMessageSubmit}
-        onSendMessageVoice={this.handleMessageSubmitVoice}
-        onSpeechError={this.handleSpeechNotification}
+        onSpeechRecognitionResult={this.handleSpeechRecognitionResult}
+        onSpeechRecognitionError={this.handleSpeechRecognitionError}
         title={this.props.title}
         titleAvatar={this.props.titleAvatar}
         subtitle={this.props.subtitle}
@@ -66,7 +66,7 @@ Widget.propTypes = {
   titleAvatar: PropTypes.string,
   subtitle: PropTypes.string,
   handleNewUserMessage: PropTypes.func.isRequired,
-  handleSpeechNotifications: PropTypes.func.isRequired,
+  handleSpeechRecognitionError: PropTypes.func.isRequired,
   senderPlaceHolder: PropTypes.string,
   profileAvatar: PropTypes.string,
   showCloseButton: PropTypes.bool,

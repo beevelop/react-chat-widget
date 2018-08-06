@@ -20,8 +20,8 @@ const Conversation = props =>
     />
     <Sender
       sendMessage={props.sendMessage}
-      onSendMessageVoice={props.onSendMessageVoice}
-      onSpeechError={props.onSpeechError}
+      onSpeechRecognitionResult={props.onSpeechRecognitionResult}
+      onSpeechRecognitionError={props.onSpeechRecognitionError}
       placeholder={props.senderPlaceHolder}
       disabledInput={props.disabledInput}
       autofocus={props.autofocus}
@@ -33,8 +33,8 @@ Conversation.propTypes = {
   titleAvatar: PropTypes.string,
   subtitle: PropTypes.string,
   sendMessage: PropTypes.func,
-  onSendMessageVoice: PropTypes.func,
-  onSpeechError: PropTypes.func,
+  onSpeechRecognitionResult: PropTypes.func,
+  onSpeechRecognitionError: PropTypes.func,
   senderPlaceHolder: PropTypes.string,
   profileAvatar: PropTypes.string,
   toggleChat: PropTypes.func,

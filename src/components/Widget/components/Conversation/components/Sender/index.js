@@ -19,14 +19,14 @@ export default class Sender extends React.Component {
   };
 
   componentDidMount() {
-    const { onSpeechError } = this.props;
+    const { onSpeechRecognitionError } = this.props;
     const firstChar = /\S/;
     function capitalize(s) {
       return s.replace(firstChar, m => m.toUpperCase());
     }
 
     function upgrade() {
-      onSpeechError(CHAT_ERRORS.UPGRADE);
+      onSpeechRecognitionError(CHAT_ERRORS.UPGRADE);
     }
 
     if (!('webkitSpeechRecognition' in window)) {
@@ -44,7 +44,7 @@ export default class Sender extends React.Component {
 
       this.recognition.onerror = (event) => {
         if (event.error === 'no-speech') {
-          onSpeechError(CHAT_ERRORS.NO_SPEECH);
+          onSpeechRecognitionError(CHAT_ERRORS.NO_SPEECH);
           if (this.state.recognizing) {
             this.setState({
               recognizing: false,
@@ -55,13 +55,13 @@ export default class Sender extends React.Component {
           }
         }
         if (event.error === 'audio-capture') {
-          onSpeechError(CHAT_ERRORS.AUDIO_CAPTURE);
+          onSpeechRecognitionError(CHAT_ERRORS.AUDIO_CAPTURE);
         }
         if (event.error === 'not-allowed') {
           if (event.timeStamp - this.state.start_timestamp < 100) {
-            onSpeechError(CHAT_ERRORS.NOT_ALLOWED_LESS_100);
+            onSpeechRecognitionError(CHAT_ERRORS.NOT_ALLOWED_LESS_100);
           } else {
-            onSpeechError(CHAT_ERRORS.NOT_ALLOWED);
+            onSpeechRecognitionError(CHAT_ERRORS.NOT_ALLOWED);
           }
         }
         if (event.error) this.setState({ ignore_onend: true });
@@ -97,14 +97,14 @@ export default class Sender extends React.Component {
         }
 
         const finalTranscriptOutput = capitalize(this.state.final_transcript);
-        this.props.onSendMessageVoice(finalTranscriptOutput);
+        this.props.onSpeechRecognitionResult(finalTranscriptOutput);
       };
     }
   }
   startButton = (event) => {
-    const { onSpeechError } = this.props;
+    const { onSpeechRecognitionError } = this.props;
     if (!('webkitSpeechRecognition' in window) && !this.state.recognizing) {
-      onSpeechError(CHAT_ERRORS.UPGRADE);
+      onSpeechRecognitionError(CHAT_ERRORS.UPGRADE);
     } else {
       if (this.state.recognizing) {
         this.setState({
@@ -144,8 +144,8 @@ export default class Sender extends React.Component {
 
 Sender.propTypes = {
   sendMessage: PropTypes.func,
-  onSendMessageVoice: PropTypes.func,
-  onSpeechError: PropTypes.func,
+  onSpeechRecognitionResult: PropTypes.func,
+  onSpeechRecognitionError: PropTypes.func,
   placeholder: PropTypes.string,
   disabledInput: PropTypes.bool,
   autofocus: PropTypes.bool

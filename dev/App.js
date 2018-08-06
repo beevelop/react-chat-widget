@@ -10,7 +10,7 @@ export default class App extends Component {
     addResponseMessage(newMessage);
   }
 
-  handleSpeechNotifications = (msg) => {
+  handleSpeechRecognitionError = (msg) => {
     console.log(msg)
   }
 
@@ -20,7 +20,7 @@ export default class App extends Component {
         title="Bienvenido"
         subtitle="Asistente virtual"
         senderPlaceHolder="Escribe aquí ..."
-        handleSpeechNotifications={this.handleSpeechNotifications}
+        handleSpeechRecognitionError={this.handleSpeechRecognitionError}
         handleNewUserMessage={this.handleNewUserMessage}
         badge={1}
       />
