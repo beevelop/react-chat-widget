@@ -15,11 +15,17 @@ export default class App extends Component {
   }
 
   render() {
+    const speechRecognition = new webkitSpeechRecognition();
+    speechRecognition.continuous = true;
+    speechRecognition.interimResults = true;
+    speechRecognition.lang = 'en-US';
+
     return (
       <Widget
         title="Bienvenido"
         subtitle="Asistente virtual"
         senderPlaceHolder="Escribe aquí ..."
+        speechRecognition={speechRecognition}
         handleSpeechRecognitionError={this.handleSpeechRecognitionError}
         handleNewUserMessage={this.handleNewUserMessage}
         badge={1}

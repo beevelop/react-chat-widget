@@ -20,6 +20,7 @@ const Conversation = props =>
     />
     <Sender
       sendMessage={props.sendMessage}
+      speechRecognition={props.speechRecognition}
       onSpeechRecognitionResult={props.onSpeechRecognitionResult}
       onSpeechRecognitionError={props.onSpeechRecognitionError}
       placeholder={props.senderPlaceHolder}
@@ -33,6 +34,7 @@ Conversation.propTypes = {
   titleAvatar: PropTypes.string,
   subtitle: PropTypes.string,
   sendMessage: PropTypes.func,
+  speechRecognition: PropTypes.object,
   onSpeechRecognitionResult: PropTypes.func,
   onSpeechRecognitionError: PropTypes.func,
   senderPlaceHolder: PropTypes.string,

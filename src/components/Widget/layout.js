@@ -17,6 +17,7 @@ const WidgetLayout = props => (
         title={props.title}
         subtitle={props.subtitle}
         sendMessage={props.onSendMessage}
+        speechRecognition={props.speechRecognition}
         onSpeechRecognitionResult={props.onSpeechRecognitionResult}
         onSpeechRecognitionError={props.onSpeechRecognitionError}
         senderPlaceHolder={props.senderPlaceHolder}
@@ -45,6 +46,7 @@ WidgetLayout.propTypes = {
   titleAvatar: PropTypes.string,
   subtitle: PropTypes.string,
   onSendMessage: PropTypes.func,
+  speechRecognition: PropTypes.object,
   onSpeechRecognitionError: PropTypes.func,
   onSpeechRecognitionResult: PropTypes.func,
   onToggleConversation: PropTypes.func,

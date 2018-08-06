@@ -11,7 +11,6 @@ export default class Sender extends React.Component {
   state = {
     recognizing: false,
     icon: micOn,
-    color: 'blue',
     interim_transcript: '',
     final_transcript: '',
     ignore_onend: null,
@@ -19,7 +18,7 @@ export default class Sender extends React.Component {
   };
 
   componentDidMount() {
-    const { onSpeechRecognitionError } = this.props;
+    const { onSpeechRecognitionError, speechRecognition } = this.props;
     const firstChar = /\S/;
     function capitalize(s) {
       return s.replace(firstChar, m => m.toUpperCase());
@@ -29,101 +28,92 @@ export default class Sender extends React.Component {
       onSpeechRecognitionError(CHAT_ERRORS.UPGRADE);
     }
 
-    if (!('webkitSpeechRecognition' in window)) {
-      upgrade();
-    } else {
-      this.recognition = new webkitSpeechRecognition();
-      this.recognition.continuous = true;
-      this.recognition.interimResults = true;
+    this.recognition = speechRecognition
 
-      this.recognition.onstart = () => {
-        this.setState({
-          recognizing: true
-        });
-      };
+    this.recognition.onstart = () => {
+      this.setState({
+        recognizing: true
+      });
+    };
 
-      this.recognition.onerror = (event) => {
-        if (event.error === 'no-speech') {
-          onSpeechRecognitionError(CHAT_ERRORS.NO_SPEECH);
-          if (this.state.recognizing) {
-            this.setState({
-              recognizing: false,
-              icon: micOn
-            });
-            this.recognition.stop();
-            return;
-          }
-        }
-        if (event.error === 'audio-capture') {
-          onSpeechRecognitionError(CHAT_ERRORS.AUDIO_CAPTURE);
-        }
-        if (event.error === 'not-allowed') {
-          if (event.timeStamp - this.state.start_timestamp < 100) {
-            onSpeechRecognitionError(CHAT_ERRORS.NOT_ALLOWED_LESS_100);
-          } else {
-            onSpeechRecognitionError(CHAT_ERRORS.NOT_ALLOWED);
-          }
-        }
-        if (event.error) this.setState({ ignore_onend: true });
-      };
-
-      this.recognition.onend = () => {
-        this.setState({
-          recognizing: false,
-          icon: micOn
-        });
-      };
-
-      this.recognition.onresult = (event) => {
-        if (!event.results) {
-          this.recognition.onend = null;
+    this.recognition.onerror = (event) => {
+      if (event.error === 'no-speech') {
+        onSpeechRecognitionError(CHAT_ERRORS.NO_SPEECH);
+        if (this.state.recognizing) {
+          this.setState({
+            recognizing: false,
+            icon: micOn
+          });
           this.recognition.stop();
-          upgrade();
           return;
         }
-        for (let i = event.resultIndex; i < event.results.length; ++i) {
-          if (event.results[i].isFinal) {
-            this.setState({
-              final_transcript: event.results[i][0].transcript
-            });
-          } else {
-            this.setState({
-              final_transcript: ''
-            })
-            this.setState({
-              interim_transcript: this.state.interim_transcript + event.results[i][0].transcript
-            });
-          }
+      } else if (event.error === 'audio-capture') {
+        onSpeechRecognitionError(CHAT_ERRORS.AUDIO_CAPTURE);
+      } else if (event.error === 'not-allowed') {
+        if (event.timeStamp - this.state.start_timestamp < 100) {
+          onSpeechRecognitionError(CHAT_ERRORS.NOT_ALLOWED_LESS_100);
+        } else {
+          onSpeechRecognitionError(CHAT_ERRORS.NOT_ALLOWED);
         }
+      } else {
+        console.warn(event.error)
+      }
 
-        const finalTranscriptOutput = capitalize(this.state.final_transcript);
-        this.props.onSpeechRecognitionResult(finalTranscriptOutput);
-      };
-    }
-  }
-  startButton = (event) => {
-    const { onSpeechRecognitionError } = this.props;
-    if (!('webkitSpeechRecognition' in window) && !this.state.recognizing) {
-      onSpeechRecognitionError(CHAT_ERRORS.UPGRADE);
-    } else {
-      if (this.state.recognizing) {
-        this.setState({
-          recognizing: false,
-          icon: micOn
-        });
+      if (event.error) this.setState({ ignore_onend: true });
+    };
+
+    this.recognition.onend = () => {
+      this.setState({
+        recognizing: false,
+        icon: micOn
+      });
+    };
+
+    this.recognition.onresult = (event) => {
+      if (!event.results) {
+        this.recognition.onend = null;
         this.recognition.stop();
+        upgrade();
         return;
       }
+      for (let i = event.resultIndex; i < event.results.length; ++i) {
+        if (event.results[i].isFinal) {
+          this.setState({
+            final_transcript: event.results[i][0].transcript
+          });
+        } else {
+          this.setState({
+            final_transcript: ''
+          })
+          this.setState({
+            interim_transcript: this.state.interim_transcript + event.results[i][0].transcript
+          });
+        }
+      }
+
+      const finalTranscriptOutput = capitalize(this.state.final_transcript);
+      this.props.onSpeechRecognitionResult(finalTranscriptOutput);
+    };
+  }
+  startButton = (event) => {    
+    if (this.state.recognizing) {
       this.setState({
-        final_transcript: '',
-        ignore_onend: false,
-        start_timestamp: event.timeStamp,
-        recognizing: true,
-        icon: micOff
+        recognizing: false,
+        icon: micOn
       });
-      this.recognition.lang = 'en-US';
-      this.recognition.start();
+      this.recognition.stop();
+      return;
     }
+
+    this.setState({
+      final_transcript: '',
+      ignore_onend: false,
+      start_timestamp: event.timeStamp,
+      recognizing: true,
+      icon: micOff
+    });
+
+    this.recognition.start();
   };
 
   render() {
@@ -131,8 +121,8 @@ export default class Sender extends React.Component {
     return (
       <form className="rcw-sender" onSubmit={sendMessage}>
         <input type="text" className="rcw-new-message" name="message" placeholder={placeholder} disabled={disabledInput} autoFocus={autofocus} autoComplete="off" />
-        <button onClick={this.startButton} className="rcw-send" id="audio">
-          {<img src={this.state.icon} style={{ fill: this.state.color }} className="rcw-send-icon" alt="mic" />}
+        <button type="button" onClick={this.startButton} className="rcw-send" id="audio">
+          {<img src={this.state.icon} className="rcw-send-icon" alt="mic" />}
         </button>
         <button type="submit" className="rcw-send">
           <img src={send} className="rcw-send-icon" alt="send" />
@@ -144,6 +134,7 @@ export default class Sender extends React.Component {
 
 Sender.propTypes = {
   sendMessage: PropTypes.func,
+  speechRecognition: PropTypes.object,
   onSpeechRecognitionResult: PropTypes.func,
   onSpeechRecognitionError: PropTypes.func,
   placeholder: PropTypes.string,

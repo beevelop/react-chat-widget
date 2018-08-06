@@ -44,6 +44,7 @@ class Widget extends Component {
       <WidgetLayout
         onToggleConversation={this.toggleConversation}
         onSendMessage={this.handleMessageSubmit}
+        speechRecognition={this.props.speechRecognition}
         onSpeechRecognitionResult={this.handleSpeechRecognitionResult}
         onSpeechRecognitionError={this.handleSpeechRecognitionError}
         title={this.props.title}
@@ -65,6 +66,7 @@ Widget.propTypes = {
   title: PropTypes.string,
   titleAvatar: PropTypes.string,
   subtitle: PropTypes.string,
+  speechRecognition: PropTypes.object,
   handleNewUserMessage: PropTypes.func.isRequired,
   handleSpeechRecognitionError: PropTypes.func.isRequired,
   senderPlaceHolder: PropTypes.string,
